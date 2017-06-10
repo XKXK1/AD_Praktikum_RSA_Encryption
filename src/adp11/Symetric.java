@@ -58,34 +58,62 @@ public class Symetric {
 	}
 
 	/**
-	 * Encrypting an intArray with the same 2 session Keys
+	 * Decrypting an intArray with the same 2 session Keys which were used to
+	 * Encrypt the array.
 	 * 
 	 * @param intArr
-	 * @return
+	 *            The expected intArray will be decrypted.
+	 * @return The decrypted Array which now will be readable.
 	 */
 	public int[] decryptArray(int[] intArr) {
 		int outArr[] = new int[intArr.length];
 		int i = 0;
-		while (i < arraySize - 1) {
+		while (i < intArr.length - 9) {
 			outArr[i + 8] = (intArr[i + 8] + 95 - sessionKey1) % 95;
 			outArr[i + 1 + 8] = (intArr[i + 1 + 8] + 95 - sessionKey2) % 95;
 			i += 2;
 		}
-		if (arraySize % 2 != 0) {
+		if (intArr.length % 2 != 0) {
 			outArr[i + 8] = (intArr[i + 8] + 95 - sessionKey1) % 95;
 		}
 		return outArr;
 	}
 
+	/**
+	 * Forming an array of type "int" into an array of type "char".
+	 * 
+	 * @param intArr
+	 *            The expected int array will be formed into a char array
+	 * @return The char array.
+	 */
 	public char[] toCharFromInt(int[] intArr) {
-		char charArr[] = new char[arraySize];
-		for (int i = 0; i < arraySize - 1; i++) {
+		char charArr[] = new char[intArr.length];
+		int i = 0;
+		
+		while (i < intArr.length -9){
 			charArr[i] = (char) (intArr[i + 8] + 32);
 			charArr[i + 1] = (char) (intArr[i + 1 + 8] + 32);
+			i+=2;
+		}	
+		if (intArr.length % 2 != 0) {
+			charArr[i] = (char) (intArr[i + 8] + 32);
+		}
+		return charArr;
+	}
+	
+	public char[] toCharFromEncryptInt(int[] intArr) {
+		char charArr[] = new char[intArr.length];
+		for (int i = 0; i < intArr.length - 1; i++) {
+			charArr[i] = (char) ((intArr[i]) +32);
 		}
 		return charArr;
 	}
 
+	/**
+	 * Initialising with two random session Keys which will be used for
+	 * encrypting and decrypting again. The values can be between 1-94 and will
+	 * not be equal.
+	 */
 	private void init() {
 		Random rand = new Random();
 
@@ -97,12 +125,28 @@ public class Symetric {
 		}
 	}
 
-	public void decryptFromOutside(int[] decrypted, int k1, int k2) {
-		setSessionKey1(k1);
-		setSessionKey2(k2);
-		int[] decryptedArr = decryptArray(decrypted);
+	/**
+	 * This method is used to decrypt a Message which is coming from another
+	 * Author created with different session Keys than this session.
+	 * 
+	 * @param encrypted
+	 *            The encrypted array which will be decrypted.
+	 * @param k1
+	 *            First session Key from the Session in which the incoming
+	 *            Message was decrypted.
+	 * @param k2
+	 *            Second session Key from the Session in which the incoming
+	 *            Message was decrypted.
+	 */
+	public void decryptFromOutside(String text) {
+		int encrypted[] = stringToInt(text);
+		
+		setSessionKey1(encrypted[0]);
+		setSessionKey2(encrypted[1]);
+
+		int[] decryptedArr = decryptArray(encrypted);
 		char[] outArr = toCharFromInt(decryptedArr);
-		System.out.println("Decrypted String:\n" + outArr.toString());
+		System.out.println( outArr);
 
 	}
 
@@ -116,13 +160,26 @@ public class Symetric {
 
 	public static void main(String[] args) {
 		Symetric test1 = new Symetric();
-		String text = "Hallo guten tag";
+		String text = "Ste";
 		int stringArray[] = test1.stringToInt(text);
 		int encrypted[] = test1.cryptArray(stringArray);
 		int decrypted[] = test1.decryptArray(encrypted);
-		char[] outArr = test1.toCharFromInt(decrypted);
-		System.out.println(outArr);
+		char out[] = test1.toCharFromInt(decrypted);
+		
+		System.out.println(out);
+		String outs = "}N      @D`1j4@Db8cB";
+		
+		test1.decryptFromOutside(outs);
 
+
+	}
+
+	public int getSessionKey1() {
+		return sessionKey1;
+	}
+
+	public int getSessionKey2() {
+		return sessionKey2;
 	}
 
 }
