@@ -118,17 +118,6 @@ public class RSA {
 		return modpow(ciphertext, d, n);
 	}
 
-	public void setN(long n) {
-		this.n = n;
-	}
-
-	public void setD(long d) {
-		this.d = d;
-	}
-
-	public void setE(long e) {
-		this.e = e;
-	}
 
 	public static void main(String[] args) {
 		RSA test = new RSA();
