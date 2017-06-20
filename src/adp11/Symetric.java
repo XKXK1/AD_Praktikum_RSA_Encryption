@@ -5,7 +5,6 @@ import java.util.Random;
 public class Symetric {
 	private int sessionKey1;
 	private int sessionKey2;
-	private int cryptSize;
 	private int arraySize;
 
 	public Symetric() {
@@ -24,7 +23,6 @@ public class Symetric {
 		char charArr[] = text.toCharArray();
 		arraySize = charArr.length;
 		int intArr[] = new int[charArr.length];
-		cryptSize = intArr.length + 8;
 
 		for (int i = 0; i < charArr.length; i++) {
 			intArr[i] = charArr[i] - 32;
@@ -41,7 +39,7 @@ public class Symetric {
 	 *         decrypting again.
 	 */
 	public int[] cryptArray(int[] intArr) {
-		int[] cryptArray = new int[cryptSize];
+		int[] cryptArray = new int[intArr.length+8];
 		cryptArray[0] = sessionKey1;
 		cryptArray[1] = sessionKey2;
 
@@ -66,15 +64,17 @@ public class Symetric {
 	 * @return The decrypted Array which now will be readable.
 	 */
 	public int[] decryptArray(int[] intArr) {
-		int outArr[] = new int[intArr.length];
+		int outArr[] = new int[intArr.length-8];
 		int i = 0;
+		sessionKey1 = intArr[0];
+		sessionKey2 = intArr[1];
 		while (i < intArr.length - 9) {
-			outArr[i + 8] = (intArr[i + 8] + 95 - sessionKey1) % 95;
-			outArr[i + 1 + 8] = (intArr[i + 1 + 8] + 95 - sessionKey2) % 95;
+			outArr[i] = (intArr[i + 8] + 95 - sessionKey1) % 95;
+			outArr[i + 1] = (intArr[i + 1 + 8] + 95 - sessionKey2) % 95;
 			i += 2;
 		}
 		if (intArr.length % 2 != 0) {
-			outArr[i + 8] = (intArr[i + 8] + 95 - sessionKey1) % 95;
+			outArr[i] = (intArr[i + 8] + 95 - sessionKey1) % 95;
 		}
 		return outArr;
 	}
@@ -86,19 +86,16 @@ public class Symetric {
 	 *            The expected int array will be formed into a char array
 	 * @return The char array.
 	 */
-	public char[] toCharFromInt(int[] intArr) {
+	public String toStringFromInt(int[] intArr) {
 		char charArr[] = new char[intArr.length];
 		int i = 0;
 		
-		while (i < intArr.length -9){
-			charArr[i] = (char) (intArr[i + 8] + 32);
-			charArr[i + 1] = (char) (intArr[i + 1 + 8] + 32);
-			i+=2;
+		while (i < intArr.length){
+			charArr[i] = (char) (intArr[i] + 32);
+			i++;
 		}	
-		if (intArr.length % 2 != 0) {
-			charArr[i] = (char) (intArr[i + 8] + 32);
-		}
-		return charArr;
+		String outString = new String(charArr);
+		return outString;
 	}
 	
 	public char[] toCharFromEncryptInt(int[] intArr) {
@@ -145,7 +142,7 @@ public class Symetric {
 		setSessionKey2(encrypted[1]);
 
 		int[] decryptedArr = decryptArray(encrypted);
-		char[] outArr = toCharFromInt(decryptedArr);
+		String outArr = toStringFromInt(decryptedArr);
 		System.out.println( outArr);
 
 	}
@@ -164,7 +161,7 @@ public class Symetric {
 		int stringArray[] = test1.stringToInt(text);
 		int encrypted[] = test1.cryptArray(stringArray);
 		int decrypted[] = test1.decryptArray(encrypted);
-		char out[] = test1.toCharFromInt(decrypted);
+		String out = test1.toStringFromInt(decrypted);
 		
 		System.out.println(out);
 		String outs = "}N      @D`1j4@Db8cB";
