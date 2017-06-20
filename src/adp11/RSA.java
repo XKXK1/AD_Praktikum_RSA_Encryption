@@ -2,6 +2,30 @@ package adp11;
 
 import java.io.IOException;
 
+/**
+ * The Variables of the RSA-Algorithm can be described as:
+ * 
+ * p and q ... are two three digit prime numbers up to 500
+ * n ... is the product of p and q
+ * 
+ * phiN(euler totient function) ... has to be that x^phiN mod n = 1
+ * phiN ... must not share a factor with e
+ * phiN ... (p - 1)*(q - 1)
+ * 
+ * for phiN find a relatively small e
+ * 
+ * d is the Inverse of e mod phiN
+ * 
+ * e * d mod phiN musst be 1
+ * 
+ * Encrypt = m^e mod n = c
+ * Decrypt = c^d mod n = m
+ * 
+ * So for decrypting only the n and d is needed. C is the Enrypted message.
+ * 
+ * @author dry
+ *
+ */
 public class RSA {
 
 	long p, q, n, d, phiN;
@@ -13,8 +37,8 @@ public class RSA {
 
 	/**
 	 * The operation of modular exponentiation calculates the remainder when an
-	 * integer b (the base) raised to the e'th power (the exponent), b^e, is
-	 * divided by a positive integer m (the modulus). In symbols, given base b,
+	 * integer "message" (the base) raised to the e'th power (the exponent), message^e, is
+	 * divided by a positive integer mod (the modulus). In symbols, given base message,
 	 * exponent e, and modulus m, the modular exponentiation c is: c ≡ b^e (mod
 	 * m).
 	 * 
@@ -23,11 +47,11 @@ public class RSA {
 	 * @param mod
 	 * @return
 	 */
-	long modpow(long value, long power, long mod) {
+	long modpow(long message, long power, long mod) {
 		long e = 1;
 
 		for (int i = 0; i < power; i++) {
-			e = ((e * value) % mod);
+			e = ((e * message) % mod);
 		}
 		return e;
 	}
