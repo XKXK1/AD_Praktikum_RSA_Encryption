@@ -44,7 +44,7 @@ public class Symetric {
 		cryptArray[1] = sessionKey2;
 
 		int i = 0;
-		while (i < arraySize - 1) {
+		while (i < intArr.length - 1) {
 			cryptArray[i + 8] = (intArr[i] + sessionKey1) % 95;
 			cryptArray[i + 1 + 8] = (intArr[i + 1] + sessionKey2) % 95;
 			i += 2;
@@ -160,6 +160,7 @@ public class Symetric {
 		String text = "Ste";
 		int stringArray[] = test1.stringToInt(text);
 		int encrypted[] = test1.cryptArray(stringArray);
+		System.out.println(test1.toStringFromInt(encrypted));
 		int decrypted[] = test1.decryptArray(encrypted);
 		String out = test1.toStringFromInt(decrypted);
 		

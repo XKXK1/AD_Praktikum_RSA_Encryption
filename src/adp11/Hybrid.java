@@ -1,11 +1,11 @@
 package adp11;
 
-public class Hibrid {
+public class Hybrid {
 
 	public RSA rsa;
 	public Symetric sym;
 
-	public Hibrid() {
+	public Hybrid() {
 		// Constructors of RSA and Symetric will already create Keys
 		rsa = new RSA();
 		sym = new Symetric();
@@ -13,11 +13,14 @@ public class Hibrid {
 
 	/**
 	 * Encrypts an incoming String with the Hybrid Method.
-	 * @param str String which will be encrypted.
+	 * 
+	 * @param str
+	 *            String which will be encrypted.
 	 * @return Encrypted String
 	 */
-	public String encrypt(String str) {
+	public void encrypt(String str) {
 		int[] kryptArr = sym.stringToInt(str);
+		kryptArr = sym.cryptArray(kryptArr);
 
 		// encrypten der beiden session keys
 		long s0 = rsa.encrypt(kryptArr[0]);
@@ -36,16 +39,20 @@ public class Hibrid {
 		kryptArr[3] = (int) (s0 % 95);
 		kryptArr[7] = (int) (s1 % 95);
 
-		return sym.toStringFromInt(kryptArr);
+		System.out.println("N: " + rsa.n + " | d: " + rsa.d);
+		System.out.println("Encrypted:" + sym.toStringFromInt(kryptArr));
 	}
 
 	/**
 	 * Decrypts an incoming string which was encrypted with the hybrid algorithm
 	 * 
-	 * @param str String which will be decrypted.
+	 * @param str
+	 *            String which will be decrypted.
 	 * @return Decrypted String
 	 */
-	public String decrypt(String str) {
+	public void decrypt(String str, long n, long d) {
+		rsa.n = n;
+		rsa.d = d;
 		int[] kryptArr = sym.stringToInt(str);
 
 		long s0 = kryptArr[3];
@@ -68,13 +75,14 @@ public class Hibrid {
 
 		int[] decryptArr = sym.decryptArray(kryptArr);
 
-		return sym.toStringFromInt(decryptArr);
+		System.out.println(sym.toStringFromInt(decryptArr));
 	}
 
 	public static void main(String[] args) {
-		Hibrid hib = new Hibrid();
-		hib.rsa.d = 10709;
-		hib.rsa.n = 54071;
-		System.out.println(hib.decrypt("  wp !V@yy>%A"));
+		Hybrid hib = new Hybrid();
+
+		hib.encrypt("stefan ist schlau und erklärt richitg gut!");
+		hib.decrypt("  qq 3+V]]kgusjYxmgssUi\\yh&X{syc}Uy3E3", 202211, 80525);
+
 	}
 }
